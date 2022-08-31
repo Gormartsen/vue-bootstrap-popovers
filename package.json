@@ -1,5 +1,5 @@
 {
-  "name": "vue-bootstrap-popovers",
+  "name": "@gormartsen/vue-bootstrap-popovers",
   "version": "1.0.0",
   "description": "Vue 3 bootstrap 5.1 popovers component",
   "main": "index.js",
