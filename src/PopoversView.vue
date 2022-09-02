@@ -1,20 +1,23 @@
 <style lang="scss" scoped></style>
 <template>
-  <slot name="target"></slot>
   <div
     class="popover"
+    :id="id"
     :class="popoverClasses"
     :data-popper-placement="placement"
     :role="getRole"
-    :hidden="hidden"
-    ref="popover"
-  >
-    <h3 class="popover-header" v-if="title">{{title}}</h3>
-    <div class="popover-body">
-      <slot name="content"></slot>
+    ref="popover">
+    <h3 class="popover-header" v-if="value.title">{{value.title}}</h3>
+    <div class="popover-body" v-if="value.content && !html">
+      {{value.content}}
     </div>
+    <div class="popover-body" v-if="value.content && html" v-html="value.content">
+    </div>
+    <!--div class="popover-body" v-if="value.contentElement && html" v-html="contentElementHTML">
+    </!--div>
+    <div-- class="popover-body" v-if="value.contentElement && !html" v-html="contentElementTEXT">
+    </div-->
     <div class="popover-arrow" data-popper-arrow="true"></div>
-    
   </div>
 </template>
 <script>
@@ -48,12 +51,18 @@ var converToClass = function(placement){
   if(['right', 'right-end', 'right-start'].indexOf(placement) !== -1) {
     className = 'bs-popover-end'
   }
+  return 'bs-popover-auto'
   return className;
+}
+var counter = 0;
+var getPopoverId = function(){
+  return "popover-" + counter++
 }
 export default {
   data() {
     return {
       isShow: false,
+      id: getPopoverId(),
       customStyle: "visibility: hidden;",
       myPosition: 0,
       hidden: false,
@@ -67,7 +76,7 @@ export default {
     "showBsPopover",
     "shownBsPopover",
   ],
-  props: ["placement", "title", "showOnMount", "offsetOptions"],
+  props: ["placement", "showOnMount", "offsetOptions", "value", "el", "html"],
   watch: {
     isShow: function (newValue) {
       if (newValue) {
@@ -134,37 +143,33 @@ export default {
         self.$emit("showBsPopover");
       }, 100);
     },
+    attachPopover: function(){
+      var self = this;
+      self.popup = createPopper(self.el, self.$el, {
+        placement: self.checkedPlacement,
+        modifiers: [
+          {
+            name: 'offset',
+            options: self._offsetOptions,
+          },
+        ],
+      });
+    }
   },
   unmounted() {
     this.popup.destroy();
   },
-  mounted() {
+  updated: function(){
+    this.attachPopover();
+  },
+  mounted: function() {
     if(this["offsetOptions"]) {
       this._offsetOptions = options
     }
     if(this["showOnMount"]) {
       this.show();
     }
-    var self = this;
-    var target = self.$slots.target();
-    if(target.length) {
-      var targetElement = target[0].el;
-      targetElement.addEventListener("mouseover", function(){
-        self.show();
-      })
-      targetElement.addEventListener("mouseleave", function(){
-        self.hide();
-      })
-      this.popup = createPopper(targetElement, self.$refs['popover'], {
-        placement: self.checkedPlacement,
-        modifiers: [
-          {
-            name: 'offset',
-            options: this._offsetOptions,
-          },
-        ],
-      });
-    }
+    this.attachPopover();
   },
 };
 </script>
