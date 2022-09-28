@@ -4,8 +4,8 @@ import App from "./App.vue";
 
 window.APP = createApp(App);
 
-import OffcanvasComponent from "../index";
+import PopoversViewModule from "../index";
 
-window.APP.use(OffcanvasComponent);
+window.APP.use(PopoversViewModule);
 
 window.APP.mount("#app");

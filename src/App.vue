@@ -75,35 +75,67 @@
 </style>
 <template>
   <div class="container">
-    <PopoversView 
-      title="Popover Title" 
-      placement="right" 
-      >
-      <template v-slot:target>
-        <button
-          type="button"
-          class="btn btn-primary"
-        >Test</button>
-      </template>
-      <template v-slot:content>
-        pop over content
-      </template>
-    </PopoversView>
-    <br>
-    <PopoversView 
-      placement="bottom" 
-      :show-on-mount="true">
-      <template v-slot:target>
-        <button
-          type="button"
-          class="btn btn-primary"
-        >Test bottom</button>
-      </template>
-      <template v-slot:content>
-        pop over content
-      </template>
-    </PopoversView>
+    <button
+      type="button"
+      class="btn btn-lg btn-danger"
+      v-popover.right="{
+        title: 'Popover Title',
+        content:
+          'And here\'s some amazing content. It\'s very engaging. Right?',
+      }"
+    >
+      Click to toggle popover
+    </button>
+    <hr/>
+    <button
+      type="button"
+      class="btn btn-lg btn-danger"
+      v-popover.bottom="{
+        title: 'Popover Title',
+        content:
+          'And here\'s some amazing content. It\'s very engaging. Right?',
+      }"
+    >
+      Click to toggle popover
+    </button>
 
+    <hr/>
+    <button
+      type="button"
+      class="btn btn-lg btn-danger"
+      v-popover.bottom.hover="{
+        title: 'Popover Title',
+        content:
+          'And here\'s some amazing content. It\'s very engaging. Right?',
+      }"
+    >
+      hover to trigger popover
+    </button>
+    <hr />
+    <button
+      type="button"
+      class="btn btn-lg btn-danger"
+      v-popover.bottom.hover.html="{
+        title: 'Popover Title',
+        content:
+          'And here\'s some <b>amazing</b> content. It\'s very engaging. Right?',
+      }"
+    >
+      hover to trigger popover HTML
+    </button>
+
+    <hr />
+    <button
+      type="button"
+      class="btn btn-lg btn-danger"
+      v-popover.html="{
+        title: 'Popover Title',
+        contentElement:'preview',
+      }"
+    >
+      use element for content
+      <div data-bs-content="preview">And here\'s some <b>amazing</b> content. It\'s very engaging. Right?</div>
+    </button>
   </div>
 </template>
 <script>

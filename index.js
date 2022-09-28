@@ -3,6 +3,10 @@ import Component from "./src/PopoversView.vue";
 var prepareProps = function(el, binding, originProps) {
   var props = {
     placement: "top",
+    events: {
+      start: 'click',
+      end: 'click',
+    },
     value: {}
   };
   if(originProps) {
@@ -19,6 +23,10 @@ var prepareProps = function(el, binding, originProps) {
   }
   if (binding.modifiers.html) {
     props.html = true;
+  }
+  if (binding.modifiers.hover) {
+    props.events.start = 'mouseover'
+    props.events.end = 'mouseleave'
   }
   
   for(var i in binding.value) {
@@ -48,21 +56,7 @@ export default {
           props: prepareProps(el, binding)
         }
         el.tooltip.props.el = el
-        el.addEventListener("mouseover", function () {
-          if( el.tooltip.enabled) {
-            return
-          }
-          console.log("show executed")
-          el.tooltip.enabled = true;
-          var container = document.createElement("div");
-          el.tooltip.vm = createVNode(Component, el.tooltip.props);
-          render( el.tooltip.vm, container);
-  
-          el.tooltip.node = container.firstElementChild;
-          document.body.appendChild(el.tooltip.node);
-          el.tooltip.vm.component.ctx.show()
-        });
-        el.addEventListener("mouseleave", function(){
+        el.addEventListener(el.tooltip.props.events.end, function(){
           if(!el.tooltip.enabled) {
             return
           }
@@ -76,6 +70,21 @@ export default {
             }
           },300);
         });
+        el.addEventListener(el.tooltip.props.events.start, function () {
+          if( el.tooltip.enabled) {
+            return
+          }
+          console.log("show executed")
+          el.tooltip.enabled = true;
+          var container = document.createElement("div");
+          el.tooltip.vm = createVNode(Component, el.tooltip.props);
+          render( el.tooltip.vm, container);
+  
+          el.tooltip.node = container.firstElementChild;
+          document.body.appendChild(el.tooltip.node);
+          el.tooltip.vm.component.ctx.show()
+        });
+        
       },
       beforeDestroy: function(el, binding){
         if(el.tooltip.node !== null) {
